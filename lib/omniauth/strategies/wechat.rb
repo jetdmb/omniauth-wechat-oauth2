@@ -7,12 +7,12 @@ module OmniAuth
 
       option :client_options, {
         site:          "https://api.weixin.qq.com",
-        authorize_url: "https://open.weixin.qq.com/connect/oauth2/authorize#wechat_redirect",
+        authorize_url: "https://open.weixin.qq.com/connect/qrconnect#wechat_redirect",
         token_url:     "/sns/oauth2/access_token",
         token_method:  :get
       }
 
-      option :authorize_params, {scope: "snsapi_userinfo"}
+      option :authorize_params, {scope: "snsapi_login"}
 
       option :token_params, {parse: :json}
 
@@ -45,12 +45,8 @@ module OmniAuth
         @uid ||= access_token["openid"]
         @raw_info ||= begin
           access_token.options[:mode] = :query
-          if access_token["scope"] == "snsapi_userinfo"
-            response = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :text)
-            @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
-          else
-            @raw_info = {"openid" => @uid }
-          end
+          response = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :text)
+          @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
         end
       end
 
