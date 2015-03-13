@@ -45,26 +45,25 @@ module OmniAuth
         @uid = access_token["openid"]
         @raw_info = begin
           access_token.options[:mode] = :query
-          Rails.logger.info access_token.inspect
+
           response = access_token.get("/sns/userinfo", :params => {"openid" => @uid, "access_token" => access_token.token}, parse: :text)
-          Rails.logger.info response.inspect
+
           @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
         end
-        Rails.logger.info @raw_info.inspect
+
         @raw_info 
       end
 
       protected
       def build_access_token
-        Rails.logger.info request.params.inspect
+
         params = {
           'appid' => client.id, 
           'secret' => client.secret,
           'code' => request.params['code'],
           'grant_type' => 'authorization_code' 
           }.merge(token_params.to_hash(symbolize_keys: true))
-        Rails.logger.info params.inspect
-        Rails.logger.info options.inspect
+
         client.get_token(params, deep_symbolize(options.auth_token_params || {}))
       end
 
