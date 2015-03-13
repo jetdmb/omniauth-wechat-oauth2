@@ -61,7 +61,7 @@ module OmniAuth
           }.merge(token_params.to_hash(symbolize_keys: true))
         Rails.logger.info params.inspect
         Rails.logger.info options.inspect
-        client.get_token(params, deep_symbolize(options.auth_token_params))
+        client.get_token(params, deep_symbolize(options.auth_token_params || {}))
       end
 
     end
