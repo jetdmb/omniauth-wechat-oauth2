@@ -46,7 +46,9 @@ module OmniAuth
         @raw_info ||= begin
           access_token.options[:mode] = :query
           response = access_token.get("/sns/userinfo", :params => {"openid" => @uid}, parse: :text)
+          Rails.logger.info response.inspect
           @raw_info = JSON.parse(response.body.gsub(/[\u0000-\u001f]+/, ''))
+          Rails.logger.info @raw_info.inspect
         end
       end
 
